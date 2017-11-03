@@ -211,7 +211,7 @@ pub fn expand(ast: &syn::MacroInput, attrs: &Attributes, field_attrs: &FieldAttr
 
     let ident = &ast.ident;
     let command = expand_command(ast, attrs, &fields);
-    let matches = "matches".into(): syn::Ident;
+    let matches: syn::Ident = "matches".into();
     let parse = expand_parse(ast, &fields, &matches);
     let allow_unused = syn::Attribute {
         style: syn::AttrStyle::Outer,

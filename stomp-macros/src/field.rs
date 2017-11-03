@@ -68,7 +68,7 @@ impl<'a> From<(&'a syn::Field, &'a Attributes)> for Arg<'a> {
             field.ident.as_ref().unwrap().as_ref()
         });
 
-        let index = attrs.get("index").map(|a| a.into(): u64);
+        let index: Option<u64> = attrs.get("index").map(|a| a.into());
 
         // Unlike clap we default to a flag option unless there's a attribute
         // given
