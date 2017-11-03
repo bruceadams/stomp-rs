@@ -1,5 +1,5 @@
-use syn;
 use quote;
+use syn;
 
 pub struct Attribute {
     key: String,
@@ -8,7 +8,10 @@ pub struct Attribute {
 
 impl Attribute {
     pub fn new(key: String) -> Attribute {
-        Attribute { key: key, values: vec![] }
+        Attribute {
+            key: key,
+            values: vec![],
+        }
     }
 
     pub fn push(&mut self, value: syn::Lit) {
@@ -16,17 +19,23 @@ impl Attribute {
     }
 
     pub fn values(&self) -> Vec<String> {
-        self.values.iter().map(|s| match *s {
+        self.values
+            .iter()
+            .map(|s| match *s {
             syn::Lit::Str(ref s, _) => s.clone(),
             _ => panic!("stomp-macros: multi-valued attributes must be strings"),
-        }).collect()
+        })
+            .collect()
     }
 
     fn only_value(&self) -> &syn::Lit {
         if self.values.len() == 1 {
             &self.values[0]
         } else {
-            panic!("stomp-macros: expected a single value for attribute '{}' but had multiple", self.key);
+            panic!(
+                "stomp-macros: expected a single value for attribute '{}' but had multiple",
+                self.key
+            );
         }
     }
 }
@@ -48,7 +57,11 @@ impl<'a> Into<&'a str> for &'a Attribute {
         if let &syn::Lit::Str(ref value, _) = self.only_value() {
             value
         } else {
-            panic!("Expected string value for attribute {} but got a {:?}", self.key, self.only_value());
+            panic!(
+                "Expected string value for attribute {} but got a {:?}",
+                self.key,
+                self.only_value()
+            );
         }
     }
 }
@@ -58,7 +71,11 @@ impl<'a> Into<&'a [u8]> for &'a Attribute {
         if let &syn::Lit::ByteStr(ref value, _) = self.only_value() {
             value
         } else {
-            panic!("Expected bytestring value for attribute {} but got a {:?}", self.key, self.only_value());
+            panic!(
+                "Expected bytestring value for attribute {} but got a {:?}",
+                self.key,
+                self.only_value()
+            );
         }
     }
 }
@@ -68,7 +85,11 @@ impl<'a> Into<u8> for &'a Attribute {
         if let &syn::Lit::Byte(ref value) = self.only_value() {
             *value
         } else {
-            panic!("Expected byte value for attribute {} but got a {:?}", self.key, self.only_value());
+            panic!(
+                "Expected byte value for attribute {} but got a {:?}",
+                self.key,
+                self.only_value()
+            );
         }
     }
 }
@@ -78,7 +99,11 @@ impl<'a> Into<char> for &'a Attribute {
         if let &syn::Lit::Char(ref value) = self.only_value() {
             *value
         } else {
-            panic!("Expected char value for attribute {} but got a {:?}", self.key, self.only_value());
+            panic!(
+                "Expected char value for attribute {} but got a {:?}",
+                self.key,
+                self.only_value()
+            );
         }
     }
 }
@@ -88,7 +113,11 @@ impl<'a> Into<u64> for &'a Attribute {
         if let &syn::Lit::Int(ref value, _) = self.only_value() {
             *value
         } else {
-            panic!("Expected int value for attribute {} but got a {:?}", self.key, self.only_value());
+            panic!(
+                "Expected int value for attribute {} but got a {:?}",
+                self.key,
+                self.only_value()
+            );
         }
     }
 }
@@ -98,7 +127,11 @@ impl<'a> Into<bool> for &'a Attribute {
         if let &syn::Lit::Bool(ref value) = self.only_value() {
             *value
         } else {
-            panic!("Expected bool value for attribute {} but got a {:?}", self.key, self.only_value());
+            panic!(
+                "Expected bool value for attribute {} but got a {:?}",
+                self.key,
+                self.only_value()
+            );
         }
     }
 }
@@ -108,4 +141,3 @@ impl quote::ToTokens for Attribute {
         self.only_value().to_tokens(tokens)
     }
 }
-

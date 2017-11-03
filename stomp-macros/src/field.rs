@@ -1,6 +1,7 @@
-use syn;
+
 
 use attrs::Attributes;
+use syn;
 
 pub enum Field<'a> {
     Arg(Arg<'a>),
@@ -63,17 +64,22 @@ impl<'a> From<(&'a syn::Field, &'a Attributes)> for Field<'a> {
 
 impl<'a> From<(&'a syn::Field, &'a Attributes)> for Arg<'a> {
     fn from((field, attrs): (&'a syn::Field, &'a Attributes)) -> Arg<'a> {
-        let name = attrs.get("name").map(|a| a.into())
-                .unwrap_or_else(|| field.ident.as_ref().unwrap().as_ref());
+        let name = attrs.get("name").map(|a| a.into()).unwrap_or_else(|| {
+            field.ident.as_ref().unwrap().as_ref()
+        });
 
         let index = attrs.get("index").map(|a| a.into(): u64);
 
-        // Unlike clap we default to a flag option unless there's a attribute given
+        // Unlike clap we default to a flag option unless there's a attribute
+        // given
         // telling us to not do so
         let is_flag = !index.is_some() && !attrs.get_bool("arg");
 
-        let long = attrs.get("long").map(|a| a.into())
-            .or_else(|| if is_flag { Some(name) } else { None });
+        let long = attrs.get("long").map(|a| a.into()).or_else(|| if is_flag {
+            Some(name)
+        } else {
+            None
+        });
 
         let short = attrs.get("short").map(|s| (s.into(): char).to_string());
         let value_name = attrs.get("value_name").map(|a| a.into());

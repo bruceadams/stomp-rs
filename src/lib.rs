@@ -1,6 +1,6 @@
 extern crate clap;
 
-use clap::{ App, ArgMatches };
+use clap::{App, ArgMatches};
 
 pub trait StompCommand {
     fn command() -> App<'static, 'static>;
@@ -16,13 +16,19 @@ pub trait ParseApp {
     fn parse() -> Self;
 }
 
-impl<C> ParseApp for C where C: StompCommand {
+impl<C> ParseApp for C
+where
+    C: StompCommand,
+{
     fn parse() -> Self {
         C::parse(&App::get_matches(C::command()))
     }
 }
 
-impl<C> StompCommands for Option<C> where C: StompCommands {
+impl<C> StompCommands for Option<C>
+where
+    C: StompCommands,
+{
     fn commands() -> Vec<App<'static, 'static>> {
         C::commands()
     }

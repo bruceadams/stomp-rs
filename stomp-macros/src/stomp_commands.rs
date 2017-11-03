@@ -1,5 +1,5 @@
-use syn;
 use quote;
+use syn;
 
 pub fn expand_commands(cmds: &[(&syn::Ident, &syn::Ty)]) -> quote::Tokens {
     let types = cmds.iter().map(|&(_ident, ty)| ty);
@@ -27,26 +27,20 @@ pub fn expand(ast: &syn::MacroInput) -> quote::Tokens {
     let cmds: Vec<_> = match ast.body {
         syn::Body::Enum(ref variants) => {
             variants.iter()
-                .map(|variant| match variant.data {
-                    syn::VariantData::Tuple(ref fields) => {
-                        if fields.len() == 1 {
-                            (&variant.ident, &fields[0].ty)
-                        } else {
-                            panic!("#[derive(StompCommands)] does not support enum variants with multiple fields")
-                        }
+                    .map(|variant| match variant.data {
+                syn::VariantData::Tuple(ref fields) => {
+                    if fields.len() == 1 {
+                        (&variant.ident, &fields[0].ty)
+                    } else {
+                        panic!("#[derive(StompCommands)] does not support enum variants with multiple fields")
                     }
-                    syn::VariantData::Struct(_) => {
-                        panic!("#[derive(StompCommands)] does not support struct enum variants")
-                    }
-                    syn::VariantData::Unit => {
-                        panic!("#[derive(StompCommands)] does not support unit enum variants")
-                    }
-                })
-                .collect()
+                }
+                syn::VariantData::Struct(_) => panic!("#[derive(StompCommands)] does not support struct enum variants"),
+                syn::VariantData::Unit => panic!("#[derive(StompCommands)] does not support unit enum variants"),
+            })
+                    .collect()
         }
-        syn::Body::Struct(_) => {
-            panic!("#[derive(StompCommands)] is not supported on structs")
-        }
+        syn::Body::Struct(_) => panic!("#[derive(StompCommands)] is not supported on structs"),
     };
 
     let commands = expand_commands(&cmds);

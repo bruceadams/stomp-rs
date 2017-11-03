@@ -1,4 +1,4 @@
-#![feature(proc_macro, proc_macro_lib)]
+#![feature(proc_macro)]
 #![feature(type_ascription)]
 
 extern crate proc_macro;
