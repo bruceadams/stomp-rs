@@ -16,12 +16,16 @@ pub fn stomp_command(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
     let expanded = stomp_command::expand(&ast, &attrs, &field_attrs);
     attrs.check_used(ast.ident.as_ref(), None);
     field_attrs.check_used(ast.ident.as_ref());
-    quote!(#expanded).to_string().parse().unwrap()
+    let command = quote!(#expanded).to_string().parse().unwrap();
+    println!("{}", command);
+    command
 }
 
 #[proc_macro_derive(StompCommands, attributes(stomp))]
 pub fn stomp_commands(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let ast = syn::parse_macro_input(&input.to_string()).unwrap();
     let expanded = stomp_commands::expand(&ast);
-    quote!(#expanded).to_string().parse().unwrap()
+    let commands = quote!(#expanded).to_string().parse().unwrap();
+    println!("{}", commands);
+    commands
 }
