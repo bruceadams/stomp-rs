@@ -12,7 +12,7 @@ pub struct Arg<'a> {
     pub ident: &'a syn::Ident,
     pub name: &'a str,
     pub ty: &'a syn::Ty,
-    pub short: Option<String>,
+    pub short: Option<&'a str>,
     pub long: Option<&'a str>,
     pub value_name: Option<&'a str>,
     pub index: Option<u64>,
@@ -81,7 +81,7 @@ impl<'a> From<(&'a syn::Field, &'a Attributes)> for Arg<'a> {
             None
         });
 
-        let short = attrs.get("short").map(|s| (s.into(): char).to_string());
+        let short = attrs.get("short").map(|a| a.into());
         let value_name = attrs.get("value_name").map(|a| a.into());
 
         let is_counter = attrs.get_bool("counted");
