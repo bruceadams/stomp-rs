@@ -12,7 +12,7 @@ mod field;
 mod stomp_command;
 mod stomp_commands;
 
-#[proc_macro_derive(StompCommand)]
+#[proc_macro_derive(StompCommand, attributes(stomp))]
 pub fn stomp_command(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let mut ast = syn::parse_macro_input(&input.to_string()).unwrap();
     let (attrs, field_attrs) = attrs::extract_attrs(&mut ast);
@@ -22,7 +22,7 @@ pub fn stomp_command(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
     quote!(#expanded).to_string().parse().unwrap()
 }
 
-#[proc_macro_derive(StompCommands)]
+#[proc_macro_derive(StompCommands, attributes(stomp))]
 pub fn stomp_commands(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let ast = syn::parse_macro_input(&input.to_string()).unwrap();
     let expanded = stomp_commands::expand(&ast);
